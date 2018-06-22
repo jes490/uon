@@ -55,14 +55,49 @@ class Leads extends Client
      * @link    https://api.u-on.ru/{key}/lead/{date_from}/{date_to}.{_format}
      * @param   string $date_from
      * @param   string $date_to
-     * @param   int|null $source_id - Source ID, eg ID of SMS or JivoSite
+     * @param   int $source_id - Source ID, eg ID of SMS or JivoSite
+     * @param   null|int $page
      * @return  array|false
      */
-    public function getDate($date_from, $date_to, $source_id = null)
+    public function getByDateAndSource($date_from, $date_to, $source_id, $page = null)
     {
-        $endpoint = '/lead/' . $date_from . '/' . $date_to;
-        if (!empty($source_id)) $endpoint .= '/' . $source_id;
+        $endpoint = '/leads/' . $date_from . '/' . $date_to . '/' . $source_id;
+        if (!empty($page))
+            $endpoint .= '/' . $page;
+
         return $this->doRequest('get', $endpoint);
+    }
+
+    /**
+     * Get all leads into dates range.
+     *
+     * @link    https://api.u-on.ru/{key}/leads/{date_from}/{date_to}/{page}.{_format}
+     * @param   string $date_from
+     * @param   string $date_to
+     * @param   null|int $page
+     * @return  array|false
+     */
+    public function getByDate($date_from, $date_to, $page = null)
+    {
+        $endpoint = '/leads/' . $date_from . '/' . $date_to;
+        if (!empty($page))
+            $endpoint .= '/' . $page;
+
+        return $this->doRequest('get', $endpoint);
+    }
+
+    /**
+     * Search leads by filters.
+     *
+     * @link    https://api.u-on.ru/{key}/lead/search.{_format}
+     * @param   array $parameters
+     * @return  array|false
+     */
+    public function search(array $parameters)
+    {
+        $endpoint = '/lead/search';
+
+        return $this->doRequest('post', $endpoint, $parameters);
     }
 
 }
